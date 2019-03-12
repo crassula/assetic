@@ -12,6 +12,7 @@
 namespace Assetic\Test\Extension\Twig;
 
 use Assetic\Extension\Twig\TwigResource;
+use Twig\Error\LoaderError;
 
 class TwigResourceTest extends \PHPUnit_Framework_TestCase
 {
@@ -29,7 +30,7 @@ class TwigResourceTest extends \PHPUnit_Framework_TestCase
             $loader->willImplement('Twig_SourceContextLoaderInterface');
         }
 
-        $loader->getSourceContext('asdf')->willThrow(new \Twig_Error_Loader(''));
+        $loader->getSourceContext('asdf')->willThrow(new LoaderError(''));
 
         $resource = new TwigResource($loader->reveal(), 'asdf');
         $this->assertEquals('', $resource->getContent());
@@ -48,7 +49,7 @@ class TwigResourceTest extends \PHPUnit_Framework_TestCase
         $loader->expects($this->once())
             ->method('getSource')
             ->with('asdf')
-            ->will($this->throwException(new \Twig_Error_Loader('')));
+            ->will($this->throwException(new LoaderError('')));
 
         $resource = new TwigResource($loader, 'asdf');
         $this->assertEquals('', $resource->getContent());
@@ -60,7 +61,7 @@ class TwigResourceTest extends \PHPUnit_Framework_TestCase
         $loader->expects($this->once())
             ->method('isFresh')
             ->with('asdf', 1234)
-            ->will($this->throwException(new \Twig_Error_Loader('')));
+            ->will($this->throwException(new LoaderError('')));
 
         $resource = new TwigResource($loader, 'asdf');
         $this->assertFalse($resource->isFresh(1234));
